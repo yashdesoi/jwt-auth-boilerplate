@@ -1,14 +1,16 @@
 import { NextFunction, Response } from "express";
 import * as jwt from 'jsonwebtoken';
-import { UserModel } from "../models";
+import { UserModel } from "../mongoose-models";
 import { GetUserAuthInfoRequestInterface } from "../interfaces";
+import { AccessTokenPayloadInterface } from "../interfaces/access-token-payload.interface";
+import { CustomErrorModel } from "../ts-models";
 
 export const isAuthorized = async (req: GetUserAuthInfoRequestInterface, res: Response, next: NextFunction): Promise<void> => {
   const accessToken = req?.headers?.authorization;
   const { ACCESS_TOKEN_SECRET } = process.env;
   if (accessToken) {
     try {
-      const embeddedPayloadFromJwt = <jwt.JwtPayload>jwt.verify(
+      const embeddedPayloadFromJwt = <AccessTokenPayloadInterface>jwt.verify(
         accessToken,
         <string>ACCESS_TOKEN_SECRET,
       );
@@ -26,21 +28,9 @@ export const isAuthorized = async (req: GetUserAuthInfoRequestInterface, res: Re
         throw new Error(`Unauthorized access`);
       }
     } catch(error: any) {
-      res
-        .status(401)
-        .json({
-          success: false,
-          message: error.message,
-          data: null
-        });
+      next(new CustomErrorModel(error.message, 401));
     }
   } else {
-    res
-      .status(401)
-      .json({
-        success: false,
-        message: 'Unauthorized access',
-        data: null
-      });
+    next(new CustomErrorModel('Unauthorized access', 401));
   }
 };
