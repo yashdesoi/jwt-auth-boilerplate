@@ -4,7 +4,7 @@ import { connectToDatabase } from './config';
 import { Server } from 'http';
 import { authRoute, helloWorldRoute } from './api/v1/routes';
 import morgan from 'morgan';
-import { isAuthorized } from './api/v1/middlewares';
+import { isAuthorized, outcomeHandler } from './api/v1/middlewares';
 
 dotenv.config();
 const app = express();
@@ -23,6 +23,8 @@ app.use('/api/v1/auth', authRoute);
 
 app.use(isAuthorized);
 app.use('/api/v1/hello-world', helloWorldRoute);
+
+app.use(outcomeHandler);
 
 
 
