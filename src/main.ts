@@ -1,12 +1,14 @@
 import express from 'express';
 import dotenv from 'dotenv';
 import { connectToDatabase } from './config';
+import colors from 'colors'
 import { Server } from 'http';
 import { authRoute, helloWorldRoute } from './api/v1/routes';
 import morgan from 'morgan';
 import { isAuthorized, outcomeHandler } from './api/v1/middlewares';
 
 dotenv.config();
+colors.enable();
 const app = express();
 const { PORT, MODE } = process.env;
 let server: Server;
@@ -29,10 +31,10 @@ app.use(outcomeHandler);
 
 
 connectToDatabase()
-  .then(() => server = app.listen(PORT, () => console.log(`Server is running in ${MODE} mode on port ${PORT}`)));
+  .then(() => server = app.listen(PORT, () => console.log(`Server is running in ${MODE} mode on port ${PORT}`.yellow.bold)));
 
 process.on('unhandledRejection', (error: Error, promise) => {
-  console.log(`${error.name}: ${error.message}`);
+  console.log(`${error.name}: ${error.message}`.red);
   server?.close(() => process.exit(1));
 });
 

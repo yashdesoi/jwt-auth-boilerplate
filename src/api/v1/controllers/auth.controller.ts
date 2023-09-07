@@ -1,14 +1,17 @@
 import { NextFunction, Request, Response } from 'express';
 import { UserModel } from '../mongoose-models';
 import { getAccessToken, isPasswordValid } from '../helpers';
-import { CustomErrorModel, CustomSuccessModel } from '../ts-models';
+import { ErrorHandlingModel, SuccessHandlingModel } from '../shared/models';
+import { AccessTokenViewModel } from '../view-models';
+import { UserDataModel } from '../data-models';
 
 export const signUp = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const userDocument = await UserModel.create(req.body);
-    next(new CustomSuccessModel(userDocument, 200));
+    const userData = new UserDataModel(req.body);
+    const userDocument = await UserModel.create(userData);
+    next(new SuccessHandlingModel(userDocument, 200));
   } catch (error: any) {
-    next(new CustomErrorModel(error.message, 400));
+    next(new ErrorHandlingModel(error.message, 400));
   }
 };
 
@@ -25,11 +28,11 @@ export const signIn = async (req: Request, res: Response, next: NextFunction) =>
     const accessToken = getAccessToken({
       mongoDbUserId: userDocument._id.toString()
     });
-    next(new CustomSuccessModel({ accessToken }, 200));
-  } catch(error: any) {
-    next(new CustomErrorModel(error.message, 401));
+    next(new SuccessHandlingModel(new AccessTokenViewModel(accessToken), 200));
+  } catch (error: any) {
+    next(new ErrorHandlingModel(error.message, 401));
   }
-  
 
-  
+
+
 };
