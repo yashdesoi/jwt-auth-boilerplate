@@ -1,19 +1,20 @@
-import { NextFunction, Request, Response } from "express";
-import { CustomErrorModel, CustomSuccessModel } from "../ts-models";
+import { NextFunction, Request, Response } from 'express';
+import { ErrorHandlingModel, SuccessHandlingModel } from '../shared/models';
+import { IResponseData } from '../shared/interfaces';
 
-export const outcomeHandler = (result: CustomSuccessModel | CustomErrorModel, req: Request, res: Response, next: NextFunction) => {
-  if (result instanceof CustomSuccessModel) {
+export const outcomeHandler = (result: SuccessHandlingModel | ErrorHandlingModel, req: Request, res: Response, next: NextFunction) => {
+  if (result instanceof SuccessHandlingModel) {
     res
       .status(result.statusCode)
-      .json({
+      .json(<IResponseData>{
         success: true,
         message: null,
         data: result.data
       });
-  } else if (result instanceof CustomErrorModel) {
+  } else if (result instanceof ErrorHandlingModel) {
     res
       .status(result.statusCode)
-      .json({
+      .json(<IResponseData>{
         success: false,
         message: result.message,
         data: null
