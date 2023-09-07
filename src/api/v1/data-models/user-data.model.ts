@@ -1,4 +1,7 @@
-import { IUserData } from './user-data.interface';
+export interface IUserData {
+  email: string,
+  password: string
+}
 
 export class UserDataModel implements Partial<IUserData> {
   email: string;
