@@ -1,4 +1,6 @@
-import { IAccessTokenView } from './access-token-view.interface';
+export interface IAccessTokenView {
+  accessToken: string;
+}
 
 export class AccessTokenViewModel implements IAccessTokenView {
   constructor(public accessToken: string) {}
