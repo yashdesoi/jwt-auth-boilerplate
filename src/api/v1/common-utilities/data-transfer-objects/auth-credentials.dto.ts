@@ -1,9 +1,4 @@
-export interface IUserData {
-  email: string,
-  password: string
-}
-
-export class UserDataModel implements Partial<IUserData> {
+export class AuthCredentialsDto {
   email: string;
   password:  string;
   constructor(reqBody: Record<string, string>) {

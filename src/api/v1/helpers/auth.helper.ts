@@ -1,9 +1,9 @@
 import bcrypt from 'bcrypt';
 import * as jwt from 'jsonwebtoken';
-import { IAccessTokenPayload } from '../shared/interfaces';
+import { AccessTokenPayloadInterface } from '../common-utilities/interfaces';
 
 
-export const getAccessToken = (payload: IAccessTokenPayload) => {
+export const getAccessToken = (payload: AccessTokenPayloadInterface) => {
   const { ACCESS_TOKEN_SECRET } = process.env;
   const accessToken: string = jwt.sign(
     payload,

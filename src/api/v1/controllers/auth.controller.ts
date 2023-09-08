@@ -1,24 +1,23 @@
 import { NextFunction, Request, Response } from 'express';
-import { UserModel } from '../mongoose-models';
+import { UserDataModel } from '../data-access-layer';
 import { getAccessToken, isPasswordValid } from '../helpers';
-import { ErrorHandlingModel, SuccessHandlingModel } from '../shared/models';
-import { AccessTokenViewModel } from '../view-models';
-import { UserDataModel } from '../data-models';
+import { CustomError, CustomSuccess } from '../common-utilities/utility-classes';
+import { AuthCredentialsDto } from '../common-utilities/data-transfer-objects';
 
 export const signUp = async (req: Request, res: Response, next: NextFunction) => {
   try {
-    const userData = new UserDataModel(req.body);
-    const userDocument = await UserModel.create(userData);
-    next(new SuccessHandlingModel(userDocument, 200));
+    const userData = new AuthCredentialsDto(req.body);
+    const userDocument = await UserDataModel.create(userData);
+    next(new CustomSuccess(userDocument, 200));
   } catch (error: any) {
-    next(new ErrorHandlingModel(error.message, 400));
+    next(new CustomError(error.message, 400));
   }
 };
 
 export const signIn = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { email, password } = req.body;
-    const userDocument = await UserModel.findOne({ email });
+    const userDocument = await UserDataModel.findOne({ email });
     if (!email) {
       throw new Error('Email is required');
     }
@@ -28,11 +27,8 @@ export const signIn = async (req: Request, res: Response, next: NextFunction) =>
     const accessToken = getAccessToken({
       mongoDbUserId: userDocument._id.toString()
     });
-    next(new SuccessHandlingModel(new AccessTokenViewModel(accessToken), 200));
+    next(new CustomSuccess({ accessToken }, 200));
   } catch (error: any) {
-    next(new ErrorHandlingModel(error.message, 401));
+    next(new CustomError(error.message, 401));
   }
-
-
-
 };

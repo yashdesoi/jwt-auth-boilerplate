@@ -1,4 +1,4 @@
-export class ErrorHandlingModel extends Error {
+export class CustomError extends Error {
   constructor(public message: string,
               public statusCode: number) {
     super(message);

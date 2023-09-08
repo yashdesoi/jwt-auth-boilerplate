@@ -1,24 +1,24 @@
 import { NextFunction, Response } from 'express';
 import * as jwt from 'jsonwebtoken';
-import { UserModel } from '../mongoose-models';
-import { IGetUserAuthInfoRequest, IAccessTokenPayload } from '../shared/interfaces';
-import { ErrorHandlingModel } from '../shared/models';
+import { UserDataModel } from '../../data-access-layer';
+import { GetUserAuthInfoRequestInterface, AccessTokenPayloadInterface } from '../interfaces';
+import { CustomError } from '../utility-classes';
 
-export const isAuthorized = async (req: IGetUserAuthInfoRequest, res: Response, next: NextFunction): Promise<void> => {
+export const isAuthenticated = async (req: GetUserAuthInfoRequestInterface, res: Response, next: NextFunction): Promise<void> => {
   const accessToken = req?.headers?.authorization;
   const { ACCESS_TOKEN_SECRET } = process.env;
   if (accessToken) {
     try {
-      const embeddedPayloadFromJwt = <IAccessTokenPayload>jwt.verify(
+      const embeddedPayloadFromJwt = <AccessTokenPayloadInterface>jwt.verify(
         accessToken,
         <string>ACCESS_TOKEN_SECRET,
       );
       const loggedInUserId = embeddedPayloadFromJwt?.mongoDbUserId;
       if (loggedInUserId) {
-        const user = await UserModel.findById(loggedInUserId);
+        const user = await UserDataModel.findById(loggedInUserId);
         if (user) {
           // * Adding custom property to req
-          req.user = user;
+          req.loggedInUser = user;
           next();
         } else {
           throw new Error(`Unauthorized access`);
@@ -27,9 +27,9 @@ export const isAuthorized = async (req: IGetUserAuthInfoRequest, res: Response, 
         throw new Error(`Unauthorized access`);
       }
     } catch(error: any) {
-      next(new ErrorHandlingModel(error.message, 401));
+      next(new CustomError(error.message, 401));
     }
   } else {
-    next(new ErrorHandlingModel('Unauthorized access', 401));
+    next(new CustomError('Unauthorized access', 401));
   }
 };
