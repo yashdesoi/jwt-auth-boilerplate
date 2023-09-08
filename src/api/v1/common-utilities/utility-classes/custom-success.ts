@@ -1,4 +1,4 @@
-export class SuccessHandlingModel {
+export class CustomSuccess {
   constructor(public data: any,
               public statusCode: number) {
   }

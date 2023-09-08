@@ -1,9 +1,9 @@
 import express, { NextFunction, Response } from 'express';
-import { IGetUserAuthInfoRequest } from '../shared/interfaces';
+import { GetUserAuthInfoRequestInterface } from '../common-utilities/interfaces';
 
 const router = express.Router();
 
-router.get('/', (req: IGetUserAuthInfoRequest, res: Response, next: NextFunction) => {
+router.get('/', (req: GetUserAuthInfoRequestInterface, res: Response, next: NextFunction) => {
   const result = `
   :::    ::: :::::::::: :::        :::         ::::::::        :::       :::  ::::::::  :::::::::  :::        :::::::::  
   :+:    :+: :+:        :+:        :+:        :+:    :+:       :+:       :+: :+:    :+: :+:    :+: :+:        :+:    :+: 

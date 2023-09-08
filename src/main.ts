@@ -1,11 +1,12 @@
-import express from 'express';
+import express, { NextFunction, Request, Response } from 'express';
 import dotenv from 'dotenv';
 import { connectToDatabase } from './config';
 import colors from 'colors'
 import { Server } from 'http';
 import { authRoute, helloWorldRoute } from './api/v1/routes';
 import morgan from 'morgan';
-import { isAuthorized, outcomeHandler } from './api/v1/middlewares';
+import { isAuthenticated, outcomeHandler } from './api/v1/common-utilities/middlewares';
+import { CustomError } from './api/v1/common-utilities/utility-classes';
 
 dotenv.config();
 colors.enable();
@@ -23,8 +24,11 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use('/api/v1/auth', authRoute);
 
-app.use(isAuthorized);
+app.use(isAuthenticated);
 app.use('/api/v1/hello-world', helloWorldRoute);
+app.all('*', (req: Request, res: Response, next: NextFunction) => {
+  next(new CustomError(`404 - Not Found`, 404))
+});
 
 app.use(outcomeHandler);
 
