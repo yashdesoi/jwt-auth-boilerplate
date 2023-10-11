@@ -5,8 +5,8 @@ import colors from 'colors'
 import { Server } from 'http';
 import { authRoute, helloWorldRoute } from './api/v1/routes';
 import morgan from 'morgan';
-import { isAuthenticated, outcomeHandler } from './api/v1/common-utilities/middlewares';
-import { CustomError } from './api/v1/common-utilities/utility-classes';
+import { isAuthenticated, outcomeHandler } from './api/v1/shared';
+import { CustomError } from './api/v1/shared';
 
 dotenv.config();
 colors.enable();

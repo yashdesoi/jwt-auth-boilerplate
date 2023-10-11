@@ -1,5 +1,5 @@
 import express, { NextFunction, Response } from 'express';
-import { GetUserAuthInfoRequestInterface } from '../common-utilities/interfaces';
+import { GetUserAuthInfoRequestInterface } from '../shared';
 
 const router = express.Router();
 
