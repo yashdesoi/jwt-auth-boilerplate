@@ -1,14 +1,9 @@
 import mongoose, { CallbackWithoutResultAndOptionalError } from 'mongoose';
 import { getHashedPassword } from '../helpers';
-import { EMAIL_REGEX, PASSWORD_REGEX } from '../shared';
-
-export interface UserDataInterface {
-  email: string,
-  password: string
-}
+import { EMAIL_REGEX, PASSWORD_REGEX, UserInterface } from '../shared';
 
 // User schema
-const userSchema = new mongoose.Schema<UserDataInterface>({
+const userSchema = new mongoose.Schema<UserInterface>({
   email: {
     type: String,
     required: true,
@@ -41,4 +36,4 @@ userSchema.pre('save', async function (next: CallbackWithoutResultAndOptionalErr
 });
 
 // User model
-export const UserDataModel = mongoose.model<UserDataInterface>('Users', userSchema);
+export const UserModel = mongoose.model<UserInterface>('Users', userSchema);
